@@ -1,0 +1,14 @@
+name: web
+version: 0.0.1
+dependencies:
+  exportable: ">=0.1.0 <0.2.0"
+  browser: any
+  angular: ">=0.14.0 <0.15.0"
+  satellizer:
+    path: /Users/jonathan/code/github.com/jgrowl/satellizer.dart
+  shadow_dom: any
+dev_dependencies:
+  http_server: any
+  unittest: any
+transformers:
+- angular

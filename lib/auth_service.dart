@@ -109,6 +109,5 @@ class AuthService {
 class AuthModule extends Module {
   AuthModule() {
     bind(ProvidersService, toImplementation: OauthioService);
-//    bind(OauthioService);
   }
 }

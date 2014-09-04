@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app app>
+<head>
+    <title>Hello, World!</title>
+    <!--&lt;!&ndash;Regular POLYFILL&ndash;&gt;-->
+    <!--<script src="packages/web_components/platform.js"></script>-->
+    <!--<script src="packages/web_components/dart_support.js"></script>-->
+
+    <!--&lt;!&ndash;DEBUG POLYFILL&ndash;&gt;-->
+    <!--<script src="packages/web_components/platform.concat.js"></script>-->
+    <!--<script src="packages/web_components/dart_support.js"></script>-->
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto|Montserrat:400,700|Open+Sans:400,300,600' rel='stylesheet'
+          type='text/css'>
+    <link href="http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css" rel="stylesheet">
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://cdn.jsdelivr.net/animatecss/3.2.0/animate.css" rel="stylesheet">
+    <link href="stylesheets/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="navbar navbar-default navbar-static-top">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="/#"><i class="ion-ios7-pulse-strong"></i> Satellizer</a>
+    </div>
+    <ul class="nav navbar-nav">
+        <li><a href="#/">Home</a></li>
+        <li ng-if="currentUser.isLoggedIn()"><a href="/#/users/profile">Profile</a></li>
+    </ul>
+    <ul class="nav navbar-nav pull-right" ng-if="!currentUser.isLoggedIn()">
+        <li><a href="/#/login">Login</a></li>
+        <li><a href="/#/users/sign_up">Sign up</a></li>
+    </ul>
+    <ul class="nav navbar-nav pull-right" ng-if="currentUser.isLoggedIn()">
+        <li><a href="/#/logout">Logout</a></li>
+    </ul>
+</div>
+
+<div>
+    <ng-view></ng-view>
+</div>
+
+<script type="text/javascript" src="javascripts/oauth.min.js"></script>
+<script src="packages/shadow_dom/shadow_dom.min.js"></script>
+<script type="application/dart" src="main.dart"></script>
+<script type="text/javascript" src="packages/browser/dart.js"></script>
+</body>
+</html>
