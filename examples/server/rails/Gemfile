@@ -21,8 +21,7 @@ gem 'active_model_serializers'
 gem 'devise'
 
 gem 'omniauth'
-# gem 'omniauth-oauthio', '~> 0.2.0'
-gem 'omniauth-oauthio', path: '/Users/jonathan/code/github.com/jgrowl/omniauth-oauthio'
+gem 'omniauth-oauthio', '~> 0.2.2'
 
 gem 'jwt'
 
