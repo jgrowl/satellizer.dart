@@ -1,6 +1,5 @@
-library satellizer.auth_service;
+library satellizer.auth;
 
-import 'dart:js';
 import 'dart:async';
 import 'dart:html';
 import 'dart:convert' show JSON;
@@ -12,10 +11,23 @@ import 'package:angular_oauthio_wrapper/angular_oauthio_wrapper.dart';
 
 @Injectable()
 class AuthConfig {
-  String base;        // ie. http://localhost:3000
-  String createPath;  // ie. /users.json
-  String profilePath; // ie. /users/profile.json
-  String apiPrefix;   // ie. /api/v1
+  String base,        // ie. http://localhost:3000
+  createPath,  // ie. /users.json
+  profilePath, // ie. /users/profile.json
+  apiPrefix;   // ie. /api/v1
+
+//  String logoutRedirect = '/',
+//  loginRedirect = '/',
+//  signupRedirect = '/login',
+//  loginUrl = '/auth/login',
+//  signupUrl = '/auth/signup',
+//  loginRoute = '/login',
+//  signupRoute = '/signup',
+//  tokenName = 'token',
+//  tokenPrefix = 'satellizer',
+//  unlinkUrl = '/auth/unlink/';
+//  bool loginOnSignup = true;
+
 
   String createUserUrl() {
     return "${base}${createPath}";
@@ -26,37 +38,27 @@ class AuthConfig {
   }
 }
 
-abstract class ProvidersService {
+abstract class Providers {
   Future popup(String provider);
 }
 
 @Injectable()
-class AuthService {
-  AuthConfig _authConfig;
+class OauthioProvider extends OauthioService with Providers {
+  OauthioProvider(OauthioConfig _config) : super(_config) {}
+}
+
+@Injectable()
+class Auth {
   RootScope _rootScope;
-  ProvidersService _providersService;
   Storage storage = window.sessionStorage;
   Http _http;
+  AuthConfig _authConfig;
+  Providers _providers;
   User currentUser;
 
-  AuthService(this._rootScope, this._providersService, this._http, this._authConfig) {
+  Auth(this._rootScope, this._providers, this._http, this._authConfig) {
     currentUser = new User();
     _rootScope.context['currentUser'] = currentUser;
-  }
-
-  bool isLoggedIn() {
-    return currentUser.isLoggedIn();
-  }
-
-  Future authenticate(String provider) {
-    return _providersService.popup(provider)
-    .then((result) {
-      var decode = JSON.decode(result);
-      currentUser.username = decode['user']['nickname'];
-      currentUser.isServerGeneratedPassword = true;
-      return login(decode['user'])
-      .then((result) => new Future<dynamic>.value(decode));
-    });
   }
 
   Future login(user) {
@@ -73,8 +75,44 @@ class AuthService {
     return new Future<dynamic>.value(user);
   }
 
+  Future signup(User user) {
+
+  }
+
+  Future authenticate(String provider) {
+    return _providers.popup(provider)
+    .then((result) {
+      var decode = JSON.decode(result);
+      currentUser.username = decode['user']['nickname'];
+      currentUser.isServerGeneratedPassword = true;
+      return login(decode['user'])
+      .then((result) => new Future<dynamic>.value(decode));
+    });
+  }
+
+  Future logout() {
+    storage.remove('jwt');
+    storage.remove('userId');
+    currentUser.logout();
+    return new Future.value(true);
+  }
+
+  bool isAuthenticated() {
+    return currentUser.isLoggedIn();
+  }
+
+  Future link() {
+
+  }
+
+  Future unlink() {
+
+  }
+
+  // After this point is custom stuff
+
   Future attemptRestore() {
-    if (!isLoggedIn() && canRestoreUser()) {
+    if (!isAuthenticated() && canRestoreUser()) {
       return profile().then((result) => currentUser.login(result['user']));
     }
 
@@ -97,17 +135,12 @@ class AuthService {
       return login(user).then((r) =>new Future<dynamic>.value({'status': 'registered', 'user': user}));
     });
   }
-
-  Future logout() {
-    storage.remove('jwt');
-    storage.remove('userId');
-    currentUser.logout();
-    return new Future.value(true);
-  }
 }
 
 class AuthModule extends Module {
   AuthModule() {
-    bind(ProvidersService, toImplementation: OauthioService);
+    // TODO: Make a non-oauthio ProviderService and make it default
+//    bind(Providers, toImplementation: OauthioProvider);
+    bind(Providers, toImplementation: OauthioProvider);
   }
 }

@@ -3,4 +3,5 @@ dependencies:
   angular: ">=0.14.0 <0.15.0"
   browser: any
   angular_oauthio_wrapper:
-    git: git://github.com/jgrowl/angular_oauthio_wrapper.dart.git
+    path: /Users/jonathan/code/github.com/jgrowl/livehq/angular_oauthio_wrapper
+#    git: git://github.com/jgrowl/angular_oauthio_wrapper.dart.git
